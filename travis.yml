@@ -1,0 +1,22 @@
+sudo: required
+services:
+  -docker
+
+before_install:
+  - docker build -t alysebos/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run alysebos/client-test npm text -- --coverage
+
+after_success:
+  - docker build -t alysebos/complex-client ./client
+  - docker build -t alysebos/complex-nginx ./nginx
+  - docker build -t alysebos/complex-server ./server
+  - docker build -t alysebos/complex-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push alysebos/complex-client
+  - docker push alysebos/complex-nginx
+  - docker push alysebos/complex-server
+  - docker push alysebos/complex-worker
