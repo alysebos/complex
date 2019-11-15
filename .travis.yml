@@ -6,7 +6,7 @@ before_install:
   - docker build -t alysebos/client-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run alysebos/client-test npm text -- --coverage
+  - docker run alysebos/client-test npm test -- --coverage
 
 after_success:
   - docker build -t alysebos/complex-client ./client
